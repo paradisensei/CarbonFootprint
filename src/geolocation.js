@@ -7,7 +7,7 @@ import {
 
 export default class MyGeolocation extends Component {
 
-  constructor() {
+  constructor(props) {
     super(props);
 
     this.state = {
