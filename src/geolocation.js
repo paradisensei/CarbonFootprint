@@ -4,6 +4,7 @@ import {
   View,
   Text
 } from 'react-native';
+import Database from './firebase';
 
 export default class MyGeolocation extends Component {
 
@@ -40,6 +41,7 @@ export default class MyGeolocation extends Component {
         const lon1 = this.state.longitude;
         const distance = this.state.distance +
                 measure(lat1, lon1, position.latitude, position.longitude);
+        Database.setDistance(distance);
         console.log("Covered distance = ", distance);
 
         position.distance = distance;
