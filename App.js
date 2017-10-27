@@ -6,6 +6,7 @@ import {
   View
 } from 'react-native';
 import MyCamera from './src/mycamera';
+import MyGeolocation from './src/geolocation';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -17,7 +18,7 @@ const instructions = Platform.select({
 export default class App extends Component<{}> {
   render() {
     return (
-      <MyCamera/>
+      <MyGeolocation/>
     );
   }
 }
