@@ -28,13 +28,14 @@ export default class MyCamera extends Component {
   componentDidMount() {
     this.camera.capture()
       .then(data => {
+        console.log(data);
         const formData = new FormData();
         formData.append('picture', {
-          uri: data.path, name: 'photo.jpg', type: 'image/jpg'
+          uri: data.mediaUri, name: 'photo.jpg', type: 'image/jpg'
         });
 
         //TODO specify server url
-        fetch("URL", {
+        fetch("https://postman-echo.com/post", {
            method: 'POST',
            headers: {
              'Accept': 'application/json',
