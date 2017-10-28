@@ -40,8 +40,11 @@ export default class Main extends Component {
 
         const lat1 = this.state.latitude;
         const lon1 = this.state.longitude;
-        const distance = this.state.distance +
-                measure(lat1, lon1, position.latitude, position.longitude);
+        let distance = measure(lat1, lon1, position.latitude, position.longitude);
+        if (distance == NaN) {
+          distance = 0;
+        }
+        distance += this.state.distance;
         console.log("Covered distance = ", distance);
 
         position.distance = distance;
@@ -92,10 +95,6 @@ export default class Main extends Component {
   }
 
   render() {
-    let count = <Text>Идет распознавание</Text>;
-    if (this.state.count) {
-      count = this.state.count;
-    }
     return (
         <View style={styles.camera}>
           <Camera
@@ -109,7 +108,7 @@ export default class Main extends Component {
           </Camera>
           <Text style={{height: 70, backgroundColor: 'white', fontSize: 20}}>
             Num of people inside: {this.state.count}{"\n"}
-            Carbon footprint: {this.state.distance}
+            Distance covered: {this.state.distance}
           </Text>
         </View>
     );
