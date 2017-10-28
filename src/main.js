@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
+  Text,
   View,
-  Text
+  StyleSheet
 } from 'react-native';
+import Camera from 'react-native-camera';
 
-export default class MyGeolocation extends Component {
+export default class Main extends Component {
 
   constructor(props) {
     super(props);
@@ -29,6 +30,7 @@ export default class MyGeolocation extends Component {
   }
 
   componentDidMount() {
+    // register geolocation watcher
     this.watchId = navigator.geolocation.watchPosition(
       position => {
         position = getPosition(position);
@@ -48,6 +50,36 @@ export default class MyGeolocation extends Component {
       error => console.log(error),
       { maximumAge: 1000, distanceFilter: 1 }
     );
+
+    // set interval for taking photos every 10 seconds
+    setInterval(this.takePhoto.bind(this), 10000);
+  }
+
+  takePhoto() {
+    this.camera.capture()
+      .then(data => {
+        const formData = new FormData();
+        formData.append('file', {
+          uri: data.mediaUri, name: 'photo.jpg', type: 'image/jpg'
+        });
+
+        return fetch("http://192.168.1.8:8080/upload", {
+           method: 'POST',
+           headers: {
+             'Accept': 'application/json',
+             'Content-Type': 'multipart/form-data;'
+           },
+           body: formData,
+        });
+      })
+      .then(response => {
+         console.log(response);
+         //TODO set count
+         this.setState({
+           count: 1
+         });
+      })
+      .catch(err => console.log(err));
   }
 
   componentWillUnmount() {
@@ -55,11 +87,22 @@ export default class MyGeolocation extends Component {
   }
 
   render() {
+    let count = <Text>Идет распознавание</Text>;
+    if (this.state.count) {
+      count = this.state.count;
+    }
     return (
-      <View>
-        <Text>Пройденное расстояние</Text>
-        <Text>{this.state.distance}</Text>
-      </View>
+        <View style={styles.camera}>
+          <Camera
+            ref={(cam) => {
+              this.camera = cam;
+            }}
+            style={styles.preview}
+            aspect={Camera.constants.Aspect.fill}
+            type={Camera.constants.Type.front}
+            playSoundOnCapture={false}>
+          </Camera>
+        </View>
     );
   }
 }
@@ -82,3 +125,23 @@ function measure(lat1, lon1, lat2, lon2) {
     var d = R * c;
     return d * 1000; // meters
 }
+
+const styles = StyleSheet.create({
+  camera: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  preview: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  },
+  capture: {
+    flex: 0,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    color: '#000',
+    padding: 10,
+    margin: 40
+  }
+});

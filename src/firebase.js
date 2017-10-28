@@ -11,18 +11,19 @@ const config = {
 
 firebase.initializeApp(config);
 
-class Database {
+export default class Database {
 
   static setDistance(distance) {
-
     if (distance) {
+      console.log(distance);
+      console.log(firebase.database().ref('distances'));
       firebase.database().ref('distances').push({
         distance: distance
+      }, function (error) {
+        console.log(error);
       });
+
     }
-    console.log('Error: ', distance);
   }
 
 }
-
-module.exports = Database;
