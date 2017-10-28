@@ -108,8 +108,8 @@ export default class Main extends Component {
             playSoundOnCapture={false}>
           </Camera>
           <Text style={{height: 70, backgroundColor: 'white', fontSize: 20}}>
-            Num of people inside: {"\n"}
-            Carbon footprint:
+            Num of people inside: {this.state.count}{"\n"}
+            Carbon footprint: {this.state.distance}
           </Text>
         </View>
     );
