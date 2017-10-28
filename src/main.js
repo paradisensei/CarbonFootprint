@@ -52,31 +52,36 @@ export default class Main extends Component {
     );
 
     // set interval for taking photos every 10 seconds
-    setInterval(this.takePhoto.bind(this), 10000);
+    setInterval(this.takePhoto.bind(this), 15000);
   }
 
   takePhoto() {
     this.camera.capture()
       .then(data => {
         const formData = new FormData();
-        formData.append('file', {
+        formData.append('image', {
           uri: data.mediaUri, name: 'photo.jpg', type: 'image/jpg'
         });
 
-        return fetch("http://192.168.1.8:8080/upload", {
+        return fetch("https://api.kairos.com/detect", {
            method: 'POST',
            headers: {
-             'Accept': 'application/json',
+             'app_id': '12a7d45c',
+             'app_key': '429eeea1fcccef4a8d5757c85f8c0aba',
              'Content-Type': 'multipart/form-data;'
            },
            body: formData,
         });
       })
       .then(response => {
-         console.log(response);
-         //TODO set count
+        response = JSON.parse(response._bodyText);
+        let count = 0;
+        if (response.images) {
+          count = response.images[0].faces.length;
+        }
+        console.log(count);
          this.setState({
-           count: 1
+           count: count
          });
       })
       .catch(err => console.log(err));
