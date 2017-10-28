@@ -107,6 +107,10 @@ export default class Main extends Component {
             type={Camera.constants.Type.front}
             playSoundOnCapture={false}>
           </Camera>
+          <Text style={{height: 70, backgroundColor: 'white', fontSize: 20}}>
+            Num of people inside: {"\n"}
+            Carbon footprint:
+          </Text>
         </View>
     );
   }
@@ -134,7 +138,7 @@ function measure(lat1, lon1, lat2, lon2) {
 const styles = StyleSheet.create({
   camera: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   preview: {
     flex: 1,
