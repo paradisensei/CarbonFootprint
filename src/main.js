@@ -11,7 +11,8 @@ export default class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      distance: 0
+      distance: 0,
+      count: 0
     };
   }
 
@@ -25,7 +26,7 @@ export default class Main extends Component {
         this.setState(position);
       },
       error => console.log(error),
-      { timeout: 2000, maximumAge: 1000 }
+      { timeout: 10000, maximumAge: 1000 }
     );
   }
 
@@ -55,7 +56,8 @@ export default class Main extends Component {
     );
 
     // set interval for taking photos every 10 seconds
-    setInterval(this.takePhoto.bind(this), 15000);
+    this.takePhoto();
+    setInterval(this.takePhoto.bind(this), 10000);
   }
 
   takePhoto() {
@@ -76,6 +78,7 @@ export default class Main extends Component {
            body: formData,
         });
       })
+      .catch(err => console.log(err))
       .then(response => {
         response = JSON.parse(response._bodyText);
         let count = 0;
@@ -95,10 +98,14 @@ export default class Main extends Component {
   }
 
   render() {
+    let distance = this.state.distance;
+    let carbon = (129 / 1000 * distance) / 3;
+    carbon = carbon.toFixed(2);
+    distance = distance.toFixed(1);
     return (
         <View style={styles.camera}>
           <Camera
-            ref={(cam) => {
+            ref={cam => {
               this.camera = cam;
             }}
             style={styles.preview}
@@ -106,9 +113,13 @@ export default class Main extends Component {
             type={Camera.constants.Type.front}
             playSoundOnCapture={false}>
           </Camera>
-          <Text style={{height: 70, backgroundColor: 'white', fontSize: 20}}>
-            Num of people inside: {this.state.count}{"\n"}
-            Distance covered: {this.state.distance}
+          <Text style={{height: 75, paddingLeft: 10, backgroundColor: 'white', fontSize: 20}}>
+            Количество людей в автомобиле:
+            <Text style={{fontWeight: 'bold'}}>{' '}{this.state.count} человека</Text>{"\n"}
+            Пройденное расстояние:
+            <Text style={{fontWeight: 'bold'}}>{' '}{distance} метров</Text>{"\n"}
+            Углеродный след на человека:
+            <Text style={{fontWeight: 'bold'}}>{' '}{carbon} г/км</Text>
           </Text>
         </View>
     );
